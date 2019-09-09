@@ -1,0 +1,20 @@
+SELECT CASE
+    WHEN Marks Between 70 and 100 THEN Name
+    ELSE NULL
+    END as Name,
+    CASE
+    WHEN Marks Between 0 and 9 THEN 1
+    WHEN Marks Between 10 and 19 THEN 2
+    WHEN Marks Between 20 and 29 THEN 3
+    WHEN Marks Between 30 and 39 THEN 4
+    WHEN Marks Between 40 and 49 THEN 5
+    WHEN Marks Between 50 and 59 THEN 6
+    WHEN Marks Between 60 and 69 THEN 7
+    WHEN Marks Between 70 and 79 THEN 8
+    WHEN Marks Between 80 and 89 THEN 9
+    WHEN Marks Between 90 and 100 THEN 10
+    End as Grade,
+    Marks
+FROM Students
+ORDER BY Grade DESC,Name,Marks
+;
