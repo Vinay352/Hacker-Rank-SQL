@@ -1,0 +1,19 @@
+select Node, Type
+from (
+    select N as Node, "Root" as Type
+    from BST
+    where P IS NULL
+UNION
+    select N as Node, "Leaf" as Type
+    from BST
+    where N NOT IN (
+        select b1.N
+        from BST b1 inner join BST b2 on b1.N=b2.P)
+UNION
+    select DISTINCT P as Node, "Inner" as Type
+    from BST
+    where P NOT IN (select N from BST where P IS NULL)
+    ) T
+order by Node;
+
+
