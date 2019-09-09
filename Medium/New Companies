@@ -1,0 +1,34 @@
+select Company.company_code,founder,COUNT(DISTINCT(lead_manager_code)) as L,COUNT(DISTINCT(senior_manager_code)) as S,COUNT(DISTINCT(manager_code)) as M,COUNT(DISTINCT(employee_code)) as E
+from Employee INNER JOIN Company on Employee.company_code=Company.company_code
+group by company_code,founder
+order by company_code;
+
+/*
+select company_code,COUNT(employee_code) as E
+from Employee
+group by company_code;
+*/
+
+/*
+select company_code,COUNT(manager_code) as M
+from Manager
+group by company_code;
+*/
+
+/*
+select company_code,COUNT(senior_manager_code) as S
+from Senior_Manager
+group by company_code;
+*/
+
+/*
+select company_code,COUNT(lead_manager_code) as L
+from Lead_Manager
+group by company_code;
+*/
+
+/*
+select company_code,founder
+from Company;
+*/
+
