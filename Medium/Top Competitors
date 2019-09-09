@@ -1,0 +1,17 @@
+/*Max Scores
+SELECT C.challenges_id,C.hacker_id,D.score as max
+FROM Challenges C INNER JOIN Difficulty D on C.difficulty_level=D.difficulty_level
+*/
+
+SELECT H.hacker_id,H.name
+FROM (
+    SELECT S.hacker_id as hacker_id,COUNT(S.challenge_id) as total
+    FROM (Challenges C INNER JOIN Difficulty D ON C.difficulty_level=D.difficulty_level)
+    INNER JOIN Submissions S ON C.challenge_id=S.challenge_id 
+    WHERE S.score=D.score
+    GROUP BY S.hacker_id
+    HAVING COUNT(S.hacker_id)>1
+    ) T 
+    INNER JOIN Hackers H 
+    ON T.hacker_id=H.hacker_id
+ORDER BY T.total DESC, H.hacker_id;
