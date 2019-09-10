@@ -1,0 +1,16 @@
+SELECT W.id,
+     WP.age,
+     W.coins_needed,
+     W.power
+FROM Wands W INNER JOIN Wands_Property WP 
+    ON W.code=WP.code
+WHERE (W.power,WP.age,W.coins_needed) IN (
+    SELECT ww.power,wwP.age,min(ww.coins_needed)
+    FROM Wands ww INNER JOIN Wands_Property wwP 
+    ON ww.code=wwP.code
+    WHERE wwP.is_evil=0
+    GROUP BY ww.power,wwP.age
+                        )
+    AND WP.is_evil=0
+ORDER BY W.power DESC, WP.age DESC;
+
