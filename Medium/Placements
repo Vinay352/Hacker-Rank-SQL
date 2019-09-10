@@ -1,0 +1,13 @@
+SELECT S.Name
+FROM (
+    SELECT T.p_id as p_id,T.p_salary as p_salary,T.f_id as f_id,pp.salary as f_salary
+    FROM (
+        SELECT F.ID as p_id,P.Salary as p_salary,F.Friend_ID as f_id
+        FROM Friends F INNER JOIN Packages P
+            ON F.ID=P.ID
+        ) T INNER JOIN Packages pp 
+        ON T.f_id=pp.ID
+    ) TT INNER JOIN Students S
+    ON TT.p_id=S.ID
+WHERE p_salary < f_salary
+ORDER BY TT.f_salary ASC;
