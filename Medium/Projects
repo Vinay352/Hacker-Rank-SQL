@@ -1,0 +1,21 @@
+SET sql_mode='';
+SELECT T.Start_Date,MIN(Y.End_Date)
+FROM (
+    SELECT Start_Date
+    FROM Projects 
+    WHERE Start_Date NOT IN (
+        SELECT End_date
+        FROM Projects
+        )
+    ) T,
+    (
+    SELECT End_Date
+        FROM Projects
+        WHERE End_Date NOT IN (
+            SELECT Start_Date
+            FROM Projects
+        )
+    ) Y
+WHERE T.Start_Date < Y.End_Date
+GROUP BY T.Start_Date
+ORDER BY DATEDIFF(Y.End_Date,T.Start_Date) ASC,T.Start_Date ASC;
