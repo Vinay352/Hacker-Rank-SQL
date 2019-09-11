@@ -1,0 +1,39 @@
+/* My Solution */
+SET @r1=0,@r2=0;
+SELECT R.X,R.Y
+FROM
+    (
+    SELECT CASE 
+    WHEN X IS NOT NULL AND Y IS NOT NULL THEN @r1:=@r1+1
+    END AS RN,
+        X,
+        Y
+    FROM Functions
+    ORDER BY X,Y) R,
+    (
+    SELECT CASE 
+    WHEN X IS NOT NULL AND Y IS NOT NULL THEN @r2:=@r2+1
+    END AS RN,
+        Y,
+        X
+    FROM Functions
+    ORDER BY X,Y) T
+
+WHERE R.RN != T.RN
+    AND R.X = T.Y
+    AND T.X = R.Y
+    AND (R.X < R.Y
+        OR
+        R.X = R.Y)
+GROUP BY R.X,R.Y
+ORDER BY R.X,R.Y;
+
+
+/* Another Solution */
+select x, y from functions f1 
+    where exists(select * from functions f2 where f2.y=f1.x 
+    and f2.x=f1.y and f2.x>f1.x) and (x!=y) 
+union 
+select x, y from functions f1 where x=y and 
+    ((select count(*) from functions where x=f1.x and y=f1.x)>1)    
+        order by x;
