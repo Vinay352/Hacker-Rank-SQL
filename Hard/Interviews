@@ -1,0 +1,19 @@
+SELECT Cnt.contest_id as contest, Cnt.hacker_id as hacker, Cnt.name as name, SUM(sts) as sts, SUM(stas) as stas, SUM(stv) as stv, SUM(stuv) as stuv
+FROM Contests Cnt JOIN Colleges Clg ON Clg.contest_id=Cnt.contest_id
+    JOIN Challenges C ON C.college_id=Clg.college_id
+    LEFT JOIN 
+    (SELECT challenge_id, SUM(total_views) as stv, SUM(total_unique_views) as stuv
+    FROM View_Stats 
+    GROUP BY challenge_id) VS
+    ON VS.challenge_id=C.challenge_id
+    LEFT JOIN
+    (SELECT challenge_id, SUM(total_submissions) as sts, SUM(total_accepted_submissions) as stas
+    FROM Submission_Stats
+    GROUP BY challenge_id) SS
+    ON SS.challenge_id=C.challenge_id    
+GROUP BY Cnt.contest_id,Cnt.hacker_id,Cnt.name
+HAVING SUM(sts)!=0 
+    AND SUM(stas) !=0 
+    AND SUM(stv) !=0 
+    AND SUM(stuv) !=0
+ORDER BY contest;  
