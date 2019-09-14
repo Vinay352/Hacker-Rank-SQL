@@ -1,1 +1,48 @@
+/*This is according to the description given in the question. However, the true description is to = SECOND COLUMN: ''who have made a submission every day up to that point'*/
+SELECT S.submission_date,S.cnt,W.hacker_id,H.name
+FROM (SELECT Submissions.submission_date, COUNT(DISTINCT(Submissions.hacker_id)) AS cnt
+      FROM Submissions
+      GROUP BY Submissions.submission_date) S 
+    INNER JOIN
+    (SELECT R.submission_date AS submission_date,min(E.hacker_id) AS hacker_id,E.cnt AS max_submission
+    FROM (SELECT submission_date,hacker_id,COUNT(*) as cnt
+        FROM Submissions
+        GROUP BY submission_date,hacker_id) E
+        INNER JOIN
+        (SELECT T.submission_date,MAX(T.cnt) AS max_cnt
+        FROM (SELECT submission_date,hacker_id,COUNT(*) as cnt
+             FROM Submissions
+             GROUP BY submission_date,hacker_id) T
+        GROUP BY T.submission_date) R ON R.submission_date=E.submission_date
+    WHERE R.max_cnt=E.cnt
+    GROUP BY submission_date) W ON S.submission_date=W.submission_date
+    INNER JOIN Hackers H
+    ON H.hacker_id=W.hacker_id
+ORDER BY S.submission_date
+;
 
+
+
+/*Correct and much simpler solution*/
+SELECT SUBMISSION_DATE,
+
+      (SELECT COUNT(DISTINCT HACKER_ID)
+       FROM SUBMISSIONS AS SUB2
+       WHERE SUB2.SUBMISSION_DATE=SUB1.SUBMISSION_DATE
+             AND (SELECT COUNT(DISTINCT SUBMISSION_DATE)
+                  FROM SUBMISSIONS AS SUB3
+                  WHERE SUB3.HACKER_ID=SUB2.HACKER_ID
+                        AND SUB3.SUBMISSION_DATE<SUB1.SUBMISSION_DATE) =DATEDIFF(SUB1.SUBMISSION_DATE,'2016-03-01')),
+                                  
+      (SELECT HACKER_ID
+       FROM SUBMISSIONS AS SUB4
+       WHERE SUB4.SUBMISSION_DATE=SUB1.SUBMISSION_DATE
+       GROUP BY HACKER_ID
+       ORDER BY COUNT(SUBMISSION_ID) DESC, HACKER_ID LIMIT 1) AS HID,
+        
+      (SELECT NAME
+       FROM HACKERS
+       WHERE HACKER_ID=HID)
+        
+FROM (SELECT DISTINCT SUBMISSION_DATE FROM SUBMISSIONS) AS SUB1
+;
